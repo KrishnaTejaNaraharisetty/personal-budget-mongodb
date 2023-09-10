@@ -40,7 +40,7 @@ div.menu ul li a:hover  {
 div.hero {
     height: 350px;
     background-color: #b4c6f0;
-    background-image: url('./images/bg.png');
+    background-image: url('/images/bg.png');
     /* added bg.png into a images folder in the personal-budget folder */
     background-size: 400px;
     background-repeat: no-repeat;
