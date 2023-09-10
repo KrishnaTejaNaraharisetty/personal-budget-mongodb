@@ -7,22 +7,22 @@ body {
     font-family: Tahoma, Arial;
 }
 
-header.menu {
+div.menu {
     width: 100%;
     background-color: #4d5791;
     height: 44px;
     padding: 0 40px;
 }
 
-header.menu ul,
-header.menu ul li {
+div.menu ul,
+div.menu ul li {
     margin: 0;
     padding: 0 ;
     list-style: none;
     display: inline-block;
 }
 
-header.menu ul li a {
+div.menu ul li a {
     display: block;
     padding: 0 20px;
     line-height: 44px;
@@ -32,7 +32,7 @@ header.menu ul li a {
     margin: 0;
 }
 
-header.menu ul li a:hover  {
+div.menu ul li a:hover  {
     background-color: white;
     color: #4d5791;
 }
