@@ -40,7 +40,7 @@ div.menu ul li a:hover  {
 div.hero {
     height: 350px;
     background-color: #b4c6f0;
-    background-image: url('bg.png');
+    background-image: url('../personal-budget1/bg.png');
     /* added . before / above to make path from absolute to relative */
     background-size: 400px;
     background-repeat: no-repeat;
