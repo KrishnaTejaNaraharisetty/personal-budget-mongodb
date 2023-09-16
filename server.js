@@ -4,6 +4,7 @@ const port = 3000;
 
 app.use('/', express.static('public'));
 
+/*
 const budget = {
     myBudget: [
     {
@@ -21,15 +22,24 @@ const budget = {
         budget: 90
     },
     ]
-};
+}; 
+*/
 
 app.get('/hello', (req, res) => {
     res.send('Hello World!');
 });
 
+//const datax = fs.readFileSync('budget.json');
+//const jsonDatax = JSON.parse(datax);
+
+//import data from './budget.json' assert { type: 'json' };
+
 app.get('/budget', (req, res) => {
-    res.json(budget);
+    const samp=require('./budget.json')
+    res.json(samp);
 });
+
+
 
 app.listen(port, ()=> {
     console.log('Example app listening at http://localhost:$(port)');
