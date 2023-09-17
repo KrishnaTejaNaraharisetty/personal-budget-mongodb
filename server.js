@@ -29,11 +29,6 @@ app.get('/hello', (req, res) => {
     res.send('Hello World!');
 });
 
-//const datax = fs.readFileSync('budget.json');
-//const jsonDatax = JSON.parse(datax);
-
-//import data from './budget.json' assert { type: 'json' };
-
 app.get('/budget', (req, res) => {
     const samp=require('./budget.json')
     res.json(samp);
