@@ -11,7 +11,7 @@ const nameSchema = new mongoose.Schema({
     ,
      color: {
          type: String,
-         unique: true,
+         //unique: true,
          required: true,
          minlength: 6
      },
