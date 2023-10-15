@@ -74,129 +74,157 @@
                     This app is free!!! And you are the only one holding your data!
                 </p>
             </div>
-    
-         
 
-            <div class="graphs_container">
-                
-                    <canvas id="myChart" width="400" height="400"></canvas>
-                
+            <div>
+                <h2> Charts</h2>
             </div>
+
+            <div class="text-box">
             
-            <div id="chart"></div>
+                <p>
+                    <canvas id="myChart" width="180" height="350"></canvas>
+                </p>
+            </div>
+            <div class="text-box">
+                
+                <div id="d3js"></div>
+            </div>
         
         </div>
     
     </div>
     
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js" integrity="sha512-quHCp3WbBNkwLfYUMd+KwBAgpVukJu5MncuQaWXgCrfgcxCJAq/fo+oqrRKOj+UKEmyMCG3tb8RB63W+EmrOBg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
 
     <script>
-        const getData = async () => {
-            var data;
-            var r = await axios.get('/budget');
-            return r.data.myBudget;
-        };
-
-        const Charted = async () => {
-            
-            var data = await getData();
-            console.log(data);
-            // Set up the dimensions and radius for the pie chart
-            var width = 400;
-            var height = 400;
-            var radius = Math.min(width, height) / 2;
-
-            // Create an SVG element
-            var svg = d3.select("#chart")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            // Define a color scale
-            var color = d3.scaleOrdinal()
-                .range(['#ffcd56',
-                        '#ff6384',
-                        '#36a2eb',
-                        '#fd6b19',
-                        '#553E4E',
-                        '#9EBC9E',
-                        '#86BBBD',
-                        '#250001']);
-
-            // Define the pie layout
-            var pie = d3.pie()
-                .value(function(d) { return d.budget; });
-
-            // Create an arc generator
-            var arc = d3.arc()
-                .innerRadius(0)
-                .outerRadius(radius);
-
-            // Bind the data to the SVG elements
-            var arcs = svg.selectAll("arc")
-                .data(pie(data))
-                .enter()
-                .append("g");
-
-            // Append the arcs to the SVG and add colors
-            arcs.append("path")
-                .attr("d", arc)
-                .attr("fill", function(d) { return color(d.data.title); });
-
-            // Add labels to the arcs
-            arcs.append("text")
-                .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-                .attr("text-anchor", "middle")
-                .text(function(d) { return d.data.title; });
-        }
-       Charted();
-
-        let datax= {
+        var dataSource = {
+            datasets: [
+                {
                     data: [],
-                    backgroundColor: [
-                        '#ffcd56',
-                        '#ff6384',
-                        '#36a2eb',
-                        '#fd6b19',
-                        "#000080", "#800080", "#808080", "#a52a2a"
-
-                    ],
-                    labels: []
+                    backgroundColor: [],
+                }
+            ],
+            labels: []
         };
         function createChart() {
-          var test = new Chart(myChart, {
-            type: "doughnut",
-            data: {
-                labels: datax.labels,
-                datasets: [
-                {
-                    label: "Language Popularity",
-                    data: datax.data,
-                },
-                ],
-            }
-            })
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var myPieChart  =  new Chart(ctx, {
+                type: 'pie',
+                data: dataSource
+            });
         }
-       function getBudget() {
+        function getBudget() {
             axios.get('/budget')
-            .then((res) => {
-                console.log(res.data.myBudget.length);
-                for(var i = 0; i < res.data.myBudget.length; i++ ){
-                    datax.data.push(res.data.myBudget[i].budget);
-                    datax.labels.push(res.data.myBudget[i].title);
+            .then(function  (res){
+                console.log(res);
+                for (var i=0; i<res.data.length; i++) {
+                    dataSource.datasets[0].data[i] = res.data[i].budget;
+                    dataSource.labels[i] = res.data[i].title;
+                    dataSource.datasets[0].backgroundColor[i] = res.data[i].color;
                 }
-                console.log(res.data.myBudget[0].budget);
                 createChart();
             })
-        };
+        }
         getBudget();
     </script>
+    <script>
+        var d3jsData = {}
+        var d3jsLabels = []
+        var d3jsColors = []
+        function created3js(){
+            var width = 650
+                height = 650
+                margin = 150
 
+            var radius = Math.min(width, height) / 2 - margin
+
+            var svg = d3.select("#d3js")
+            .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+            .append("g")
+                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+            var color = d3.scaleOrdinal()
+            .domain([d3jsLabels])
+            .range(d3jsColors);
+
+            var pie = d3.pie()
+            .sort(null)
+            .value(function(d) {return d.value; })
+            var data_ready = pie(d3.entries(d3jsData))
+
+            var arc = d3.arc()
+            .innerRadius(radius * 0.5)  
+            .outerRadius(radius * 0.8)
+
+            var outerArc = d3.arc()
+            .innerRadius(radius * 0.9)
+            .outerRadius(radius * 0.9)
+
+    
+            svg
+            .selectAll('allSlices')
+            .data(data_ready)
+            .enter()
+            .append('path')
+            .attr('d', arc)
+            .attr('fill', function(d){ return(color(d.data.key)) })
+            .attr("stroke", "white")
+            .style("stroke-width", "2px")
+            .style("opacity", 0.7)
+
+            svg
+            .selectAll('allPolylines')
+            .data(data_ready)
+            .enter()
+            .append('polyline')
+                .attr("stroke", "black")
+                .style("fill", "none")
+                .attr("stroke-width", 1)
+                .attr('points', function(d) {
+                var posA = arc.centroid(d) 
+                var posB = outerArc.centroid(d) 
+                var posC = outerArc.centroid(d);
+                var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 
+                posC[0] = radius * 0.95 * (midangle < Math.PI ? 1 : -1); 
+                return [posA, posB, posC]
+                })
+
+            svg
+            .selectAll('allLabels')
+            .data(data_ready)
+            .enter()
+            .append('text')
+                .text( function(d) { console.log(d.data.key) ; return d.data.key } )
+                .attr('transform', function(d) {
+                    var pos = outerArc.centroid(d);
+                    var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                    pos[0] = radius * 0.99 * (midangle < Math.PI ? 1 : -1);
+                    return 'translate(' + pos + ')';
+                })
+                .style('text-anchor', function(d) {
+                    var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+                    return (midangle < Math.PI ? 'start' : 'end')
+                })
+            }
+        function getChart() {
+            axios.get('/budget')
+            .then(function  (res){
+            console.log(res);
+            for (var i=0; i<res.data.length; i++) {
+                d3jsData[res.data[i].title] = res.data[i].budget;
+                d3jsLabels[i] = res.data[i].title;
+                d3jsColors[i] = res.data[i].color;
+            }
+            created3js();
+            })
+        }
+        getChart();
+    </script>
   <!-- This is a Semantic HTML Change -->
   <article class="bottom">
     <div class="center">
